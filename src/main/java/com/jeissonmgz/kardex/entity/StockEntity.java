@@ -18,7 +18,7 @@ public class StockEntity {
     private Date date;
 
     @ManyToOne
-    private ProductEntity productEntity;
+    private ProductEntity product;
 
     @Enumerated(EnumType.STRING)
     private EConcept concept;

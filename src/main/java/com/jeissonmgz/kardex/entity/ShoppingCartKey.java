@@ -5,11 +5,12 @@ import lombok.Data;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import java.io.Serializable;
 
 @Embeddable
 @Data
 @Builder
-public class ShoppingCartKey {
+public class ShoppingCartKey implements Serializable {
 
     @Column(name = "stock_id")
     Long stockId;

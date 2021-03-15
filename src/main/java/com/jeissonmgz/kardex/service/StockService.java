@@ -30,7 +30,7 @@ public class StockService {
                                     .date(new Date())
                                     .isInput(true)
                                     .quantity(productDto.getQuantity())
-                                    .productEntity(
+                                    .product(
                                             ProductEntity.builder()
                                                     .id(productDto.getId())
                                                     .build())
@@ -92,7 +92,7 @@ public class StockService {
                                     .date(new Date())
                                     .isInput(false)
                                     .quantity(productDto.getQuantity())
-                                    .productEntity(
+                                    .product(
                                             ProductEntity.builder()
                                                     .id(productDto.getId())
                                                     .build())
