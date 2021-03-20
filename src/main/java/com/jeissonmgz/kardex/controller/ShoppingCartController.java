@@ -5,10 +5,8 @@ import com.jeissonmgz.kardex.dto.ProductDto;
 import com.jeissonmgz.kardex.dto.UserDto;
 import com.jeissonmgz.kardex.service.ShoppingCartService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "shopping_cart")
@@ -18,13 +16,13 @@ public class ShoppingCartController {
     private final ShoppingCartService shoppingCartService;
 
     @PostMapping(path = "/add")
-    public void add(UserDto user, ProductDto product) {
-        shoppingCartService.add(user, product);
+    public void add(@RequestBody ProductDto product, Authentication authentication) {
+        shoppingCartService.add(authentication.getName(), product);
     }
 
     @PostMapping(path = "/get")
-    public ListProductDto get(UserDto user) {
-        return shoppingCartService.get(user);
+    public ListProductDto get(Authentication authentication) {
+        return shoppingCartService.get(authentication.getName());
     }
 
 }

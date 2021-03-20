@@ -2,11 +2,12 @@ package com.jeissonmgz.kardex.service;
 
 import com.jeissonmgz.kardex.dto.ListProductDto;
 import com.jeissonmgz.kardex.dto.ProductDto;
-import com.jeissonmgz.kardex.dto.UserDto;
 import com.jeissonmgz.kardex.entity.EConcept;
 import com.jeissonmgz.kardex.entity.ProductEntity;
 import com.jeissonmgz.kardex.entity.StockEntity;
+import com.jeissonmgz.kardex.entity.UserEntity;
 import com.jeissonmgz.kardex.repository.StockRepository;
+import com.jeissonmgz.kardex.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,10 +21,11 @@ public class StockService {
 
     private final StockRepository stockRepository;
     private final ShoppingCartService shoppingCartService;
+    private final UserRepository userRepository;
 
     public void input (ListProductDto listProductDto) {
         listProductDto.getProducts()
-                .forEach(productDto -> {
+                .forEach(productDto ->
                     stockRepository.save(
                             StockEntity.builder()
                                     .concept(EConcept.BUY)
@@ -41,8 +43,8 @@ public class StockService {
                                                     .divide(BigDecimal.valueOf(productDto.getQuantity())))
                                     )
                                     .build()
-                    );
-                });
+                    )
+                );
     }
 
     private Integer getQuantity(ProductDto productDto) {
@@ -79,13 +81,13 @@ public class StockService {
         return inputsPriceTotal.divide(BigDecimal.valueOf(inputsQuantity));
     }
 
-    public boolean output(UserDto user) {
-        List<ProductDto> products = shoppingCartService.get(user).getProducts();
+    public boolean output(String userId) {
+        List<ProductDto> products = shoppingCartService.get(userId).getProducts();
         for (ProductDto productDto : products) {
             if (getQuantity(productDto) < productDto.getQuantity() )
                 return false;
         }
-        products.forEach(productDto -> {
+        products.forEach(productDto ->
                     stockRepository.save(
                             StockEntity.builder()
                                     .concept(EConcept.SELL)
@@ -100,8 +102,7 @@ public class StockService {
                                     .quantityTotal((getQuantity(productDto) - productDto.getQuantity()))
                                     .valueTotal(getPriceAverage(productDto))
                                     .build()
-                    );
-                });
+                    ));
         return true;
     }
 }

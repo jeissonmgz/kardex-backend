@@ -2,13 +2,13 @@ package com.jeissonmgz.kardex.service;
 
 import com.jeissonmgz.kardex.dto.ListProductDto;
 import com.jeissonmgz.kardex.dto.ProductDto;
-import com.jeissonmgz.kardex.dto.UserDto;
 import com.jeissonmgz.kardex.entity.ProductEntity;
 import com.jeissonmgz.kardex.entity.ShoppingCartEntity;
 import com.jeissonmgz.kardex.entity.ShoppingCartProductEntity;
 import com.jeissonmgz.kardex.entity.UserEntity;
 import com.jeissonmgz.kardex.repository.ShoppingCartProductRepository;
 import com.jeissonmgz.kardex.repository.ShoppingCartRepository;
+import com.jeissonmgz.kardex.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,9 +22,10 @@ public class ShoppingCartService {
 
     private final ShoppingCartRepository shoppingCartRepository;
     private final ShoppingCartProductRepository shoppingCartProductRepository;
+    private final UserRepository userRepository;
 
-    public void add(UserDto user, ProductDto product) {
-        UserEntity userEntity = UserEntity.builder().id(user.getId()).build();
+    public void add(String userId, ProductDto product) {
+        UserEntity userEntity = this.userRepository.findByUsername(userId).get();
         ShoppingCartEntity shoppingCartEntity = getOrCreateShoppingCart(userEntity);
         ShoppingCartProductEntity shoppingCartProductEntity =
                 getOrCreateShoppingCartProduct(shoppingCartEntity, product);
@@ -50,8 +51,9 @@ public class ShoppingCartService {
                         .build());
     }
 
-    public ListProductDto get(UserDto user) {
-        ShoppingCartEntity shoppingCartEntity = getOrCreateShoppingCart(UserEntity.builder().id(user.getId()).build());
+    public ListProductDto get(String userId) {
+        UserEntity user = this.userRepository.findByUsername(userId).get();
+        ShoppingCartEntity shoppingCartEntity = getOrCreateShoppingCart(user);
         return ListProductDto.builder()
                 .idUser(user.getId())
                 .products(getProducts(shoppingCartEntity))
