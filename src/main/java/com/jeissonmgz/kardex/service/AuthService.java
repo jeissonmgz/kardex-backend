@@ -2,6 +2,8 @@ package com.jeissonmgz.kardex.service;
 
 import com.jeissonmgz.kardex.dto.UserDto;
 import com.jeissonmgz.kardex.entity.UserEntity;
+import com.jeissonmgz.kardex.exception.BusinessException;
+import com.jeissonmgz.kardex.exception.BusinessExceptionMessage;
 import com.jeissonmgz.kardex.repository.UserRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -42,15 +44,15 @@ public class AuthService {
                 }});
     }
 
-    public Either<Exception, String> login(UserDto userDto) {
-        return (Either<Exception, String>) userRepository.findByUsername(userDto.getUsername()).map(
+    public Either<BusinessException, String> login(UserDto userDto) {
+        return (Either<BusinessException, String>) userRepository.findByUsername(userDto.getUsername()).map(
                 userEntity -> userEntity.getPassword().equals(userDto.getPassword())
         ).map(isAuth->{
             if(isAuth) {
                 return Either.right(getJwt(userDto));
             }
-            return Either.left(new Exception("User no found"));
-        }).orElse(Either.left(new Exception("User no found")));
+            return Either.left(new BusinessException(BusinessExceptionMessage.LOGIN_FAILED));
+        }).orElse(Either.left(new BusinessException(BusinessExceptionMessage.LOGIN_FAILED)));
     }
 
     public String getJwt(UserDto userDto) {

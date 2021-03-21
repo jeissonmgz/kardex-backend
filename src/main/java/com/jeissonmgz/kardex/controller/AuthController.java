@@ -1,6 +1,7 @@
 package com.jeissonmgz.kardex.controller;
 
 import com.jeissonmgz.kardex.dto.UserDto;
+import com.jeissonmgz.kardex.exception.BusinessException;
 import com.jeissonmgz.kardex.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,7 +22,7 @@ public class AuthController {
     }
 
     @PostMapping(path = "/login")
-    public String login(@RequestBody UserDto userDto) throws Exception {
+    public String login(@RequestBody UserDto userDto) throws BusinessException {
         return authService.login(userDto)
                 .getOrElseThrow((exception)->exception);
     }
