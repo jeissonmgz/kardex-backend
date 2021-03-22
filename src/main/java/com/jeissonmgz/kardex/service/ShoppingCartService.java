@@ -12,6 +12,7 @@ import com.jeissonmgz.kardex.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,7 +38,7 @@ public class ShoppingCartService {
 
     private ShoppingCartEntity getOrCreateShoppingCart (UserEntity userEntity) {
         return shoppingCartRepository.findByUser(userEntity).orElse(
-                shoppingCartRepository.save(ShoppingCartEntity.builder().user(userEntity).build())
+                shoppingCartRepository.save(ShoppingCartEntity.builder().user(userEntity).products(new ArrayList<>()).build())
         );
     }
 

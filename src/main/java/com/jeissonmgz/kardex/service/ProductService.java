@@ -1,9 +1,13 @@
 package com.jeissonmgz.kardex.service;
 
 import com.jeissonmgz.kardex.dto.ProductDetailDto;
+import com.jeissonmgz.kardex.dto.ProductDetailsDto;
 import com.jeissonmgz.kardex.dto.ProductDto;
 import com.jeissonmgz.kardex.entity.ProductEntity;
+import com.jeissonmgz.kardex.exception.BusinessException;
+import com.jeissonmgz.kardex.exception.BusinessExceptionMessage;
 import com.jeissonmgz.kardex.repository.ProductRepository;
+import com.jeissonmgz.kardex.repository.StockRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +19,7 @@ import java.util.stream.Collectors;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final StockRepository stockRepository;
 
     public List<ProductDto> getProducts(){
         return productRepository.findAll().stream().map(productEntity ->
@@ -26,8 +31,35 @@ public class ProductService {
                 ).collect(Collectors.toList());
     }
 
-    public ProductDetailDto getProductDetail(ProductDto productDto){
-        return null;
+    private ProductDto getProduct(Integer id) throws BusinessException{
+        return productRepository.findById(id).map(productEntity ->
+                ProductDto.builder()
+                        .id(productEntity.getId())
+                        .name(productEntity.getName())
+                        .price(productEntity.getPrice())
+                        .build()
+        ).orElseThrow(()-> new BusinessException(BusinessExceptionMessage.PRODUCT_NOT_FOUND));
+    }
+
+    public ProductDetailsDto getProductDetail(ProductDto productDto) throws BusinessException {
+        productDto = getProduct(productDto.getId());
+        return ProductDetailsDto.builder()
+                .product(productDto)
+                .details(
+                stockRepository.findByProduct(ProductEntity.builder().id(productDto.getId()).build())
+                .stream()
+                .map(
+                        stockEntity -> ProductDetailDto.builder()
+                                .concept(stockEntity.getConcept())
+                                .date(stockEntity.getDate())
+                                .isInput(stockEntity.isInput())
+                                .quantity(stockEntity.getQuantity())
+                                .value(stockEntity.getValue())
+                                .quantityTotal(stockEntity.getQuantityTotal())
+                                .valueTotal(stockEntity.getValueTotal())
+                                .build()
+                ).collect(Collectors.toList()))
+                .build();
     }
 
     public ProductDto save(ProductDto productDto) {

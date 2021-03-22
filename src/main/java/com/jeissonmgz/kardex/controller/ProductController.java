@@ -1,7 +1,9 @@
 package com.jeissonmgz.kardex.controller;
 
 import com.jeissonmgz.kardex.dto.ProductDetailDto;
+import com.jeissonmgz.kardex.dto.ProductDetailsDto;
 import com.jeissonmgz.kardex.dto.ProductDto;
+import com.jeissonmgz.kardex.exception.BusinessException;
 import com.jeissonmgz.kardex.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +23,8 @@ public class ProductController {
     }
 
     @GetMapping(path = "/{id}")
-    public ProductDetailDto getProductDetail(@PathVariable("id")  Integer productId){
+    public ProductDetailsDto getProductDetail(@PathVariable("id")  Integer productId)
+            throws BusinessException {
         return productService.getProductDetail(ProductDto.builder().id(productId).build());
     }
 

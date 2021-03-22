@@ -1,8 +1,10 @@
 package com.jeissonmgz.kardex.controller;
 
 import com.jeissonmgz.kardex.dto.ProductDetailDto;
+import com.jeissonmgz.kardex.dto.ProductDetailsDto;
 import com.jeissonmgz.kardex.dto.ProductDto;
 import com.jeissonmgz.kardex.entity.EConcept;
+import com.jeissonmgz.kardex.exception.BusinessException;
 import com.jeissonmgz.kardex.service.ProductService;
 import io.vavr.collection.List;
 import org.junit.jupiter.api.Assertions;
@@ -33,9 +35,15 @@ class ProductControllerTest {
     }
 
     @Test
-    void getProductDetail() {
-        Mockito.when(productService.getProductDetail(Mockito.any())).thenReturn(ProductDetailDto.builder().concept(EConcept.BUY).build());
-        Assertions.assertEquals(EConcept.BUY, productController.getProductDetail(1).getConcept());
+    void getProductDetail() throws BusinessException {
+        Mockito.when(productService.getProductDetail(Mockito.any())).thenReturn(ProductDetailsDto.builder().build());
+        productController.getProductDetail(1);
+    }
+
+    @Test
+    void callGetProductDetail_wWhenFail_thenException() throws BusinessException {
+        Mockito.when(productService.getProductDetail(Mockito.any())).thenReturn(ProductDetailsDto.builder().build());
+        productController.getProductDetail(1);
     }
 
     @Test

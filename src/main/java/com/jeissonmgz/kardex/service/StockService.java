@@ -21,7 +21,6 @@ public class StockService {
 
     private final StockRepository stockRepository;
     private final ShoppingCartService shoppingCartService;
-    private final UserRepository userRepository;
 
     public void input (ListProductDto listProductDto) {
         listProductDto.getProducts()
@@ -78,7 +77,7 @@ public class StockService {
                 .build());
         Integer inputsQuantity = filterStockQuantityByIsInput(productEntityList, true);
         BigDecimal inputsPriceTotal = filterStockTotalPriceByIsInput(productEntityList, true);
-        return inputsPriceTotal.divide(BigDecimal.valueOf(inputsQuantity));
+        return inputsQuantity.equals(0)? inputsPriceTotal : inputsPriceTotal.divide(BigDecimal.valueOf(inputsQuantity));
     }
 
     public boolean output(String userId) {

@@ -55,7 +55,7 @@ public class AuthService {
         }).orElse(Either.left(new BusinessException(BusinessExceptionMessage.LOGIN_FAILED)));
     }
 
-    public String getJwt(UserDto userDto) {
+    private String getJwt(UserDto userDto) {
 
         List<GrantedAuthority> grantedAuthorities = AuthorityUtils
                 .commaSeparatedStringToAuthorityList("ROLE_USER");
